@@ -70,9 +70,12 @@ def run_eval(model, tokenizer, val_dataset, max_length: int):
         outputs = model(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
         total_loss += outputs.loss.item()
         n_batches += 1
+        
+        shift_logits = outputs.logits[:, :-1, :]
+        shift_labels = labels[:, 1:]
 
-        preds = torch.argmax(outputs.logits, dim=-1)
-        mask = attention_mask.bool()
+        mask = attention_mask[:, 1:].bool()
+        preds = torch.argmax(shift_logits, dim=-1)
         all_preds.extend(preds[mask].cpu().numpy().tolist())
         all_labels.extend(input_ids[mask].cpu().numpy().tolist())
 
