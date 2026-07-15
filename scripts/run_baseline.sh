@@ -10,7 +10,7 @@ cd "${PROJECT_ROOT}"
 source .venv/bin/activate
 
 echo "== Running baseline (zero-shot) evaluation =="
-python src/evaluation/evaluate.py \
+python src/evaluations/evaluate.py \
     --config configs/model_config.yaml \
     --run_name baseline \
     --val_data_path data/val
