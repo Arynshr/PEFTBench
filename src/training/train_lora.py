@@ -59,20 +59,20 @@ def get_tokenizer(model_cfg):
 
 
 def load_base_model(model_cfg):
-    dtype = (
-        torch.bfloat16
-        if model_cfg["precision"]["mixed_precision"] == "bf16"
-        else torch.float16
-    )
+    dtype = torch.bfloat16 if model_cfg["precision"]["mixed_precision"] == "bf16" else torch.float16
+    n_gpu = torch.cuda.device_count()
+    use_multi_gpu = model_cfg.get("multi_gpu", {}).get("enabled", False) and n_gpu > 1
+    device_map = "auto" if use_multi_gpu else None
+
     model = AutoModelForCausalLM.from_pretrained(
         model_cfg["model"]["hf_repo"],
         torch_dtype=dtype,
-        device_map="auto",
-        trust_remote_code=model_cfg["model"]["trust_remote_code"],
+        device_map=device_map,
+        trust_remote_code=model_cfg["model"].get("trust_remote_code", False),
     )
-    model.enable_input_require_grads()
+    if not use_multi_gpu and torch.cuda.is_available():
+        model = model.to("cuda")
     return model
-
 
 def attach_lora(model, lora_cfg):
     config = LoraConfig(
