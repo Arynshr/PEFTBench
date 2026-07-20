@@ -27,19 +27,35 @@ DEFAULT_PROMPTS = [
 
 def load_local_model(model_cfg, adapter_path):
     dtype = torch.bfloat16 if model_cfg["precision"]["mixed_precision"] == "bf16" else torch.float16
+
+    repo = model_cfg["model"]["hf_repo"]
+    revision = model_cfg["model"].get("revision", "main")
+    trust_remote_code = model_cfg["model"].get("trust_remote_code", False)
+
     model = AutoModelForCausalLM.from_pretrained(
-        model_cfg["model"]["hf_repo"],
+        repo,
+        revision=revision,  
         torch_dtype=dtype,
-        trust_remote_code=model_cfg["model"].get("trust_remote_code", False),
+        trust_remote_code=trust_remote_code,
     ).to("cuda" if torch.cuda.is_available() else "cpu")
+
     if adapter_path:
         model = PeftModel.from_pretrained(model, adapter_path)
+
     model.eval()
     return model
 
 
 def bench_local(model_cfg, adapter_path, prompts, max_new_tokens):
-    tokenizer = AutoTokenizer.from_pretrained(model_cfg["model"]["hf_repo"])
+    repo = model_cfg["model"]["hf_repo"]
+    revision = model_cfg["model"].get("revision", "main")
+    trust_remote_code = model_cfg["model"].get("trust_remote_code", False)
+    
+    tokenizer = AutoTokenizer.from_pretrained(
+        repo,
+        revision=revision,  
+        trust_remote_code=trust_remote_code,
+    )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     model = load_local_model(model_cfg, adapter_path)
