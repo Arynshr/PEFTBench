@@ -26,6 +26,7 @@ import time
 import numpy as np
 import torch
 import yaml
+from tqdm import tqdm
 from datasets import load_from_disk
 from sklearn.metrics import accuracy_score, f1_score
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -61,7 +62,7 @@ def run_eval(model, tokenizer, val_dataset, max_length: int):
     all_labels = []
     n_batches = 0
 
-    for example in val_dataset:
+    for example in tqdm(val_dataset, desc="Evaluating"):
         input_ids = torch.tensor(example["input_ids"]).unsqueeze(0).to(model.device)
         attention_mask = torch.tensor(example["attention_mask"]).unsqueeze(0).to(model.device)
         labels = input_ids.clone()
