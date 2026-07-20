@@ -60,6 +60,9 @@ def main(model_cfg_path, train_cfg_path):
         tokenizer.pad_token = tokenizer.eos_token
 
     raw = load_dataset(d_cfg["hf_repo"], split=d_cfg["train_split"])
+    max_samples = d_cfg.get("max_samples")
+    if max_samples:
+        raw = raw.shuffle(seed=d_cfg["seed"]).select(range(min(max_samples, len(raw))))
     raw = raw.map(
         format_example,
         remove_columns=[c for c in raw.column_names if c != "text"],
