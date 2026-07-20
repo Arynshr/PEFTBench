@@ -77,7 +77,7 @@ def run_eval(model, tokenizer, val_dataset, max_length: int):
         mask = attention_mask[:, 1:].bool()
         preds = torch.argmax(shift_logits, dim=-1)
         all_preds.extend(preds[mask].cpu().numpy().tolist())
-        all_labels.extend(input_ids[mask].cpu().numpy().tolist())
+        all_labels.extend(input_ids[:, 1:][mask].cpu().numpy().tolist())
 
     avg_loss = total_loss / max(n_batches, 1)
     # Token-level accuracy/F1 as proxy classification metrics (per README §12)

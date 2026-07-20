@@ -87,7 +87,7 @@ source .venv/bin/activate
 # ---- 1. Data preprocessing ----------------------------------------------
 if [ "${FORCE}" = "true" ] || [ ! -d data/train ] || [ ! -d data/val ]; then
     run_stage "preprocess" python src/data/preprocess.py \
-        --config configs/model_config.yaml \
+        --model_config configs/model_config.yaml \
         --train_config configs/training_config.yaml
 else
     echo "data/train and data/val already exist, skipping preprocess (use --force to redo)"
