@@ -1,7 +1,8 @@
 model:
   name: "Qwen2.5-1.5B"
   hf_repo: "Qwen/Qwen2.5-1.5B"
-  max_seq_length: 1024
+  revision: "main" 
+  max_seq_length: 512
   trust_remote_code: false
 
 lora:
