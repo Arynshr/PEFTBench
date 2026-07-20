@@ -8,3 +8,5 @@ tensorboard>=2.17.0
 accelerate>=0.31.0
 pyyaml>=6.0
 python-dotenv>=1.0.0
+kernels>=0.11.1
+sglang[all]>=0.4.0
