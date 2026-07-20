@@ -158,7 +158,7 @@ def main(model_cfg_path, train_cfg_path):
         args=training_args,
         train_dataset=train_ds,
         eval_dataset=val_ds,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=collator,
     )
 

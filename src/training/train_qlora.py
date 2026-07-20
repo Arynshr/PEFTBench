@@ -6,6 +6,7 @@ before attaching the LoRA adapter, per configs/model_config.yaml's `qlora` block
 import argparse
 import json
 import os
+import sys
 import time
 import yaml
 import torch
@@ -20,6 +21,7 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from src.utils.gpu_monitor import GPUMonitor
 
 
