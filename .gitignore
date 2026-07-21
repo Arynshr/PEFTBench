@@ -225,3 +225,5 @@ logs/
 .env
 *.log
 .DS_Store
+exports/
+data/
